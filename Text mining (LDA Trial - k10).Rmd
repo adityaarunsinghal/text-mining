@@ -1,0 +1,99 @@
+---
+title: "LDA Trials"
+author: Aditya Singhal
+output: pdf_document
+date: "May 28, 2020"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+options(digits = 3)
+```
+
+
+```{r, echo=T, message=F}
+library(tidyverse)
+library(haven)
+library(dplyr)
+library(ggplot2)
+library(estimatr)
+library(topicmodels)
+# install.packages("quanteda")
+library(quanteda)
+# install.packages('http://github.com/tidyverse/broom')
+# install.packages("tidytext")
+library(tidytext)
+
+### Load in the College Distance dataset
+datadf <- read_csv('All Data/Raw Journey Data/Core_Text_Until16May2020.csv')
+```
+
+```{r}
+require(quanteda)
+datadf_corpus = corpus(datadf$text, docnames = datadf$id)
+summary(datadf_corpus)
+datadf_dtm = dfm(datadf_corpus)
+
+rowTotals <- apply(datadf_dtm , 1, sum) #Find the sum of words in each Document
+datadf_dtm   <- datadf_dtm[rowTotals> 0, ]           #remove all docs without words
+
+# datadf_lda = dtm2ldaformat(datadf_dtm, omit_empty = TRUE)
+# output_dtm(datadf_dtm, outputfile = 'AllDataDTM_Until16May.csv', doc_name = NULL)
+```
+
+
+```{r}
+# data("AssociatedPress")
+
+# set a seed so that the output of the model is predictable
+lda <- LDA(datadf_dtm, k = 10, control = list(seed = 10013))
+
+datadf_topics = tidy(lda, matrix='beta')
+
+```
+
+```{r}
+top_terms <- datadf_topics %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+top_terms %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip() +
+  scale_x_reordered()
+```
+```{r}
+library(tidyr)
+# 
+# beta_spread <- datadf_topics %>%
+#   mutate(topic = paste0("topic", topic)) %>%
+#   spread(topic, beta) %>%
+#   filter(topic1 > .001 | topic2 > .001) %>%
+#   mutate(log_ratio = log2(topic2 / topic1))
+# 
+# beta_spread
+```
+
+https://www.tidytextmining.com/topicmodeling.html
+
+```{r}
+datadf_documents <- tidy(lda, matrix = "gamma")
+datadf_documents
+```
+
+```{r}
+
+write.csv(datadf_documents,"All Data/Raw Journey Data/Entry_topics_Until16May2020.csv", row.names = FALSE)
+
+
+# tidy(datadf_corpus) %>%
+#   filter(id == '1439137473084-3fc756cc3f8d6404') %>%
+#   arrange(desc(count))
+```
+

@@ -1,0 +1,54 @@
+---
+title: "LDA Trials"
+author: Aditya Singhal
+output: pdf_document
+date: "May 28, 2020"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+options(digits = 3)
+```
+
+
+```{r, echo=T, message=F}
+library(tidyverse)
+library(haven)
+library(dplyr)
+library(ggplot2)
+library(estimatr)
+library(topicmodels)
+# install.packages("quanteda")
+library(quanteda)
+# install.packages('http://github.com/tidyverse/broom')
+# install.packages("tidytext")
+library(tidytext)
+
+### Load in the College Distance dataset
+datadf <- read_csv("All Data/Raw Journey Data/Until16May2020(all jsons to csv).csv")
+```
+
+```{r}
+tibble(text=datadf$text)
+# %>% unnest_tokens(sentence, text)
+```
+
+
+```{r}
+
+
+```
+
+```{r}
+
+```
+
+
+```{r}
+```
+
+```{r}
+
+```
+
