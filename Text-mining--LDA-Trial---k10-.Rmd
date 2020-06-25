@@ -107,7 +107,7 @@ exclusive_top_terms %>%
   geom_col(show.legend = FALSE) +
   facet_wrap(~ topic, scales = "free") +
   coord_flip() +
-  scale_x_reordered() + 
-  ggsave('Figures saved from analyses/Exclusive_words_in_LDA_topic_modelling(16May2020).png', height = 15 , width = 10)
+  scale_x_reordered()
+  ggsave(g, height = 7 , width = 7)
 ```
 
