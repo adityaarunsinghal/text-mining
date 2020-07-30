@@ -198,14 +198,14 @@ contractions = {
 }
 
 
-# In[11]:
+# In[16]:
 
 
 def cleaner (test):
     test = re.sub('\\n', ' ', test)
     test = re.sub('<.*?>', ' ', test)
     test = re.sub('&nbsp;', ' ', test)
-    test = re.sub('&[a-z]+;', ' ', test)
+    test = re.sub('&[a-z]+;', '', test)
     test = re.sub('\.{2,}', ' ... ', test)
     test = re.sub('!{2,}', ' ! ', test)
     test = re.sub('\?{2,}', ' ? ', test)
@@ -240,14 +240,14 @@ def cleaner (test):
     return(" ".join(uncontracted))
 
 
-# In[12]:
+# In[17]:
 
 
 from nltk.stem import WordNetLemmatizer as wnl
 lemmatizer = wnl()
 
 
-# In[13]:
+# In[18]:
 
 
 def nltk_tag_to_wordnet_tag(nltk_tag):
@@ -278,6 +278,31 @@ def lemmatize(sentence):
     return " ".join(lemmatized_sentence)
 
 
-# In[14]:
+# In[21]:
 
+
+# show('1586737092738-3fa9f1f5ffbc2dc0')
+
+
+# In[19]:
+
+
+# def show (ID):
+#     print(datadf.text.loc[ID])
+#     print('\n ------------------ \n')
+#     print(datadf.cleaned_text.loc[ID])
+#     return datadf.loc[ID].to_frame().T
+
+
+# In[2]:
+
+
+def binner(nbins, df):
+    bin_size = round(len(df)/nbins)
+    try:
+        out = pd.cut(df.index, bins=nbins, include_lowest=False,labels=df.index[bin_size::bin_size].values) #binning
+    except:
+        out = pd.cut(df.index, bins=nbins, include_lowest=False,labels=df.index[::bin_size].values)
+    df['bins']=out
+    return (df)
 
